@@ -10,16 +10,14 @@ function [] = conducao()
   destinos(2) = criaObj([25 75], 1);
 
   robos(1) = criaRobo([2.5 2.5], 1.5, bolas(1), 1, -1);
-  robos(2) = criaRobo([5 5], 1.5, bolas(1), 1, -1);
+  robos(2) = criaRobo([50 50], 1.5, bolas(1), 1, -1);
   robos(3) = criaRobo([23 23], 1.5, bolas(2), 1, -1);
-  robos(4) = criaRobo([20 20], 1.5, bolas(2), 1, -1);
+  robos(4) = criaRobo([70 90], 1.5, bolas(2), 1, -1);
 
-  while (1)
-    
+  while (1)    
     for j = 1:2
       
-      if(distancia(bolas(j), destinos(j)) > 1)
-        
+      if(distancia(bolas(j), destinos(j)) > 1)        
         for i = (2*j-1):2*j
           obstaculos_robo = concatena_obstaculos_robo(i, robos, [bolas pedras]);
 
@@ -28,7 +26,19 @@ function [] = conducao()
           robos(i) = move(robos(i), obstaculos_robo, 1);
         end
 
-        bolas(j) = deslocamento_bola(bolas, robos, pedras, j);
+        % não permite que um robô sozinho movimente a bola
+        if(distancia(bolas(j), robos(2*j-1)) < (bolas(j).raio*2 + robos(2*j-1).raio) && distancia(bolas(j), robos(2*j)) < (bolas(j).raio*2 + robos(2*j).raio))
+          bolas(j) = deslocamento_bola(bolas, robos, pedras, j);
+        else
+          
+          for i = 1:length(pedras)
+            if(distancia(bolas(j), pedras(i)) < (bolas(j).raio*2.5 + pedras(i).raio))
+              bolas(j) = deslocamento_bola(bolas, robos, pedras, j);
+              break;
+            end
+          end
+
+        end
 
       end    
     end
